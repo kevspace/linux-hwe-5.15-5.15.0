@@ -33,6 +33,9 @@
 #include <linux/pgtable.h>
 #include <linux/kasan.h>
 
+extern bool disable_dirty;
+extern unsigned long dirty_counter;
+
 struct mempolicy;
 struct anon_vma;
 struct anon_vma_chain;

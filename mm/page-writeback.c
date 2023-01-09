@@ -59,6 +59,11 @@
 
 #define RATELIMIT_CALC_SHIFT	10
 
+bool disable_dirty;
+EXPORT_SYMBOL(disable_dirty);
+unsigned long dirty_counter;
+EXPORT_SYMBOL(dirty_counter);
+
 /*
  * After a CPU has dirtied this many pages, balance_dirty_pages_ratelimited
  * will look to see if it needs to force writeback or throttling.
@@ -2594,6 +2599,7 @@ int set_page_dirty(struct page *page)
 
 	page = compound_head(page);
 	if (likely(mapping)) {
+		dirty_counter++;
 		/*
 		 * readahead/lru_deactivate_page could remain
 		 * PG_readahead/PG_reclaim due to race with end_page_writeback
@@ -2606,7 +2612,10 @@ int set_page_dirty(struct page *page)
 		 */
 		if (PageReclaim(page))
 			ClearPageReclaim(page);
-		return mapping->a_ops->set_page_dirty(page);
+		if (disable_dirty)
+			return 1;
+		else
+			return mapping->a_ops->set_page_dirty(page);
 	}
 	if (!PageDirty(page)) {
 		if (!TestSetPageDirty(page))

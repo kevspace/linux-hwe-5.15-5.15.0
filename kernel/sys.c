@@ -2718,3 +2718,16 @@ COMPAT_SYSCALL_DEFINE1(sysinfo, struct compat_sysinfo __user *, info)
 	return 0;
 }
 #endif /* CONFIG_COMPAT */
+
+SYSCALL_DEFINE1(setdirty, int, dirty)
+{
+	disable_dirty = dirty ? false : true;
+	return 0;
+}
+
+SYSCALL_DEFINE1(setcounter, int, toggle)
+{
+	if (!toggle)
+		dirty_counter = 0;
+	return dirty_counter;
+}
