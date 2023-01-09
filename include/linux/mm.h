@@ -33,6 +33,8 @@
 #include <linux/pgtable.h>
 #include <linux/kasan.h>
 
+extern unsigned long redirty_counter;
+
 struct mempolicy;
 struct anon_vma;
 struct anon_vma_chain;

@@ -2718,3 +2718,10 @@ COMPAT_SYSCALL_DEFINE1(sysinfo, struct compat_sysinfo __user *, info)
 	return 0;
 }
 #endif /* CONFIG_COMPAT */
+
+SYSCALL_DEFINE1(setcounter, int, toggle)
+{
+	if (!toggle)
+		redirty_counter = 0;
+	return redirty_counter;
+}

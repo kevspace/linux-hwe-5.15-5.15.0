@@ -59,6 +59,9 @@
 
 #define RATELIMIT_CALC_SHIFT	10
 
+unsigned long redirty_counter;
+EXPORT_SYMBOL(redirty_counter);
+
 /*
  * After a CPU has dirtied this many pages, balance_dirty_pages_ratelimited
  * will look to see if it needs to force writeback or throttling.
@@ -2573,9 +2576,10 @@ EXPORT_SYMBOL(account_page_redirty);
 int redirty_page_for_writepage(struct writeback_control *wbc, struct page *page)
 {
 	int ret;
+	redirty_counter++;
 
 	wbc->pages_skipped++;
-	ret = __set_page_dirty_nobuffers(page);
+	ret = 1;
 	account_page_redirty(page);
 	return ret;
 }
